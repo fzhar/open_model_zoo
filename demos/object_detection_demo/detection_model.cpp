@@ -27,9 +27,10 @@ DetectionModel::DetectionModel(const std::string& modelFileName, float confidenc
     confidenceThreshold(confidenceThreshold) {
 }
 
-std::shared_ptr<InternalModelData> DetectionModel::preprocess(const InputData& inputData, InferenceEngine::InferRequest::Ptr& request)
+void DetectionModel::preprocess(int64_t frameID, const InputData& inputData, InferenceEngine::InferRequest::Ptr& request)
 {
     auto& img = inputData.asRef<ImageInputData>().inputImage;
+    framesSizes[frameID] = img.size();
 
     if (useAutoResize) {
         /* Just set input blob containing read image. Resize and layout conversionx will be done automatically */
@@ -40,8 +41,6 @@ std::shared_ptr<InternalModelData> DetectionModel::preprocess(const InputData& i
         Blob::Ptr frameBlob = request->GetBlob(inputsNames[0]);
         matU8ToBlob<uint8_t>(img, frameBlob);
     }
-
-    return std::shared_ptr<InternalModelData>(new InternalImageModelData(img.cols, img.rows));
 }
 
 std::vector<std::string> DetectionModel::loadLabels(const std::string & labelFilename){

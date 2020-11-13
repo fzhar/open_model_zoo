@@ -26,7 +26,7 @@ public:
     /// @param model_nameFileName of model to load
     SegmentationModel(const std::string& modelFileName);
 
-    virtual std::shared_ptr<InternalModelData> preprocess(const InputData& inputData, InferenceEngine::InferRequest::Ptr& request) override;
+    virtual void preprocess(int64_t frameID, const InputData& inputData, InferenceEngine::InferRequest::Ptr& request) override;
     virtual std::unique_ptr<ResultBase> postprocess(InferenceResult& infResult);
 
 protected:

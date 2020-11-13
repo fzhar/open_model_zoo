@@ -91,12 +91,11 @@ int64_t AsyncPipeline::submitData(const InputData& inputData, const std::shared_
     if (!request)
         return -1;
 
-    auto internalModelData = model->preprocess(inputData, request);
+    model->preprocess(frameID, inputData, request);
 
     request->SetCompletionCallback([this,
         frameID,
         request,
-        internalModelData,
         metaData] {
             {
                 std::lock_guard<std::mutex> lock(mtx);
@@ -106,7 +105,6 @@ int64_t AsyncPipeline::submitData(const InputData& inputData, const std::shared_
 
                     result.frameId = frameID;
                     result.metaData = std::move(metaData);
-                    result.internalModelData = std::move(internalModelData);
 
                     for (const auto& outName : model->getOutputsNames())
                         result.outputsData.emplace(outName, std::make_shared<TBlob<float>>(*as<TBlob<float>>(request->GetBlob(outName))));

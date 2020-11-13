@@ -92,12 +92,19 @@ std::unique_ptr<ResultBase> ModelYolo3::postprocess(InferenceResult & infResult)
     std::vector<DetectedObject> objects;
 
     // Parsing outputs
-    const auto& internalData = infResult.internalModelData->asRef<InternalImageModelData>();
+    auto it = framesSizes.find(infResult.frameId);
+    if (it == framesSizes.end()) {
+        throw std::out_of_range("Postprocess: Frame index is out of range");
+    }
+    const auto& sz = it->second;
+
 
     for (auto& output : infResult.outputsData) {
         this->parseYOLOV3Output(output.first, output.second, netInputHeight, netInputWidth,
-            internalData.inputImgHeight, internalData.inputImgWidth, objects);
+            sz.height, sz.width, objects);
     }
+
+    framesSizes.erase(it);
 
     //--- Checking IOU threshold conformance
     // For every i-th object we're finding all objects it intersects with, and comparing confidence

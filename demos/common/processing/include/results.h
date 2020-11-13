@@ -17,7 +17,6 @@
 #pragma once
 #include <samples/ocv_common.hpp>
 #include "metadata.h"
-#include "internal_model_data.h"
 
 struct ResultBase {
     virtual ~ResultBase() {}
@@ -37,7 +36,6 @@ struct ResultBase {
 };
 
 struct InferenceResult : public ResultBase {
-    std::shared_ptr<InternalModelData> internalModelData;
     std::map<std::string, InferenceEngine::MemoryBlob::Ptr> outputsData;
 
     /// Returns pointer to first output blob

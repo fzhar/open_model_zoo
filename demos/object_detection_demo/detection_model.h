@@ -31,12 +31,13 @@ public:
     /// than actual classes number, default "Label #N" will be shown for missing items.
     DetectionModel(const std::string& modelFileName, float confidenceThreshold, bool useAutoResize, const std::vector<std::string>& labels);
 
-    virtual std::shared_ptr<InternalModelData> preprocess(const InputData& inputData, InferenceEngine::InferRequest::Ptr& request) override;
+    virtual void preprocess(int64_t frameID, const InputData& inputData, InferenceEngine::InferRequest::Ptr& request) override;
 
     static std::vector<std::string> loadLabels(const std::string& labelFilename);
 
 protected:
     std::vector<std::string> labels;
+    std::unordered_map<int64_t, cv::Size> framesSizes;
 
     size_t netInputHeight=0;
     size_t netInputWidth=0;
