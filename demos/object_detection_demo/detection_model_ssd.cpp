@@ -26,20 +26,16 @@ ModelSSD::ModelSSD(const std::string& modelFileName,
     :DetectionModel(modelFileName, confidenceThreshold, useAutoResize, labels) {
 }
 
-void ModelSSD::onLoadCompleted(InferenceEngine::ExecutableNetwork* execNetwork, RequestsPool* requestsPool)
+void ModelSSD::preprocess(const InputData& inputData, InferenceEngine::InferRequest::Ptr& request, std::shared_ptr<MetaData>& metaData)
 {
-    DetectionModel::onLoadCompleted(execNetwork, requestsPool);
-
-    // --- Setting image info for every request in a pool. We can do it once and reuse this info at every submit -------
-    if (inputsNames.size()>1) {
-        for (auto &request : requestsPool->getInferRequestsList()) {
-            auto blob = request->GetBlob(inputsNames[1]);
-            LockedMemory<void> blobMapped = as<MemoryBlob>(blob)->wmap();
-            auto data = blobMapped.as<float *>();
-            data[0] = static_cast<float>(netInputHeight);
-            data[1] = static_cast<float>(netInputWidth);
-            data[2] = 1;
-        }
+    DetectionModel::preprocess(inputData, request, metaData);
+    if (inputsNames.size() > 1) {
+        auto blob = request->GetBlob(inputsNames[1]);
+        LockedMemory<void> blobMapped = as<MemoryBlob>(blob)->wmap();
+        auto data = blobMapped.as<float *>();
+        data[0] = static_cast<float>(netInputHeight);
+        data[1] = static_cast<float>(netInputWidth);
+        data[2] = 1;
     }
 }
 

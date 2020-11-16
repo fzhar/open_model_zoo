@@ -64,8 +64,6 @@ AsyncPipeline::AsyncPipeline(std::unique_ptr<ModelBase>&& modelInstance, const C
     // --------------------------- 5. Create infer requests ------------------------------------------------
     requestsPool.reset(new RequestsPool(execNetwork, cnnConfig.maxAsyncRequests));
 
-    // --------------------------- 6. Call onLoadCompleted to complete initialization of model -------------
-    model->onLoadCompleted(&execNetwork, requestsPool.get());
 }
 
 AsyncPipeline::~AsyncPipeline(){
