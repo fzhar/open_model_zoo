@@ -158,13 +158,13 @@ void ModelYolo3::parseYOLOV3Output(const std::string& output_name,
                 double x = (col + output_blob[box_index + 0 * side_square]) / side * original_im_w;
                 double y = (row + output_blob[box_index + 1 * side_square]) / side * original_im_h;
                 double height = std::exp(output_blob[box_index + 3 * side_square]) * region.anchors[2 * n + 1] * original_im_h / resized_im_h;
-                double width = std::exp(output_blob[box_index + 2 * side_square]) * region.anchors[2 * n]* original_im_w / resized_im_w;
+                double width = std::exp(output_blob[box_index + 2 * side_square]) * region.anchors[2 * n] * original_im_w / resized_im_w;
 
                 DetectedObject obj;
-                obj.x = (float)(x-width/2);
-                obj.y = (float)(y-height/2);
-                obj.width = (float)width;
-                obj.height = (float)height;
+                obj.x = static_cast<float>(x-width/2);
+                obj.y = static_cast<float>(y-height/2);
+                obj.width = static_cast<float>(width);
+                obj.height = static_cast<float>(height);
 
                 for (int j = 0; j < region.classes; ++j) {
                     int class_index = calculateEntryIndex(side, region.coords, region.classes, n * side_square + i, region.coords + 1 + j);
@@ -190,10 +190,10 @@ int ModelYolo3::calculateEntryIndex(int side, int lcoords, int lclasses, int loc
 }
 
 double ModelYolo3::intersectionOverUnion(const DetectedObject& o1, const DetectedObject& o2) {
-    double overlappingWidth = fmin(o1.x+o1.width, o2.x+o2.width) - fmax(o1.x, o2.x);
+    double overlappingWidth = fmin(o1.x + o1.width, o2.x + o2.width) - fmax(o1.x, o2.x);
     double overlappingHeight = fmin(o1.y + o1.height, o2.y + o2.height) - fmax(o1.y, o2.y);
     double intersectionArea = (overlappingWidth < 0 || overlappingHeight < 0) ? 0 : overlappingHeight * overlappingWidth;
-    double unionArea = o1.width*o1.height + o2.width*o2.height - intersectionArea;
+    double unionArea = o1.width * o1.height + o2.width * o2.height - intersectionArea;
     return intersectionArea / unionArea;
 }
 

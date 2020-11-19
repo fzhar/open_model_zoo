@@ -139,6 +139,7 @@ bool ParseAndCheckCommandLine(int argc, char *argv[]) {
     if (FLAGS_at.empty()) {
         throw std::logic_error("Parameter -at is not set");
     }
+
     return true;
 }
 
