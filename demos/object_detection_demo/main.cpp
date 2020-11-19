@@ -98,7 +98,7 @@ static void showUsage() {
     std::cout << std::endl;
     std::cout << "    -h                        " << help_message << std::endl;
     std::cout << "    -i \"<path>\"               " << video_message << std::endl;
-    std::cout << "    -at                       " << at_message << std::endl;
+    std::cout << "    -at \"<type>\"              " << at_message << std::endl;
     std::cout << "    -m \"<path>\"               " << model_message << std::endl;
     std::cout << "      -l \"<absolute_path>\"    " << custom_cpu_library_message << std::endl;
     std::cout << "          Or" << std::endl;
