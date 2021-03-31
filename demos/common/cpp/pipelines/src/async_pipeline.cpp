@@ -67,6 +67,7 @@ int64_t AsyncPipeline::submitData(const InputData& inputData, const std::shared_
     if (!request)
         return -1;
 
+    auto startTime = std::chrono::steady_clock::now();
     auto internalModelData = model->preprocess(inputData, request);
     preprocessMetrics.update(startTime);
 
@@ -74,7 +75,8 @@ int64_t AsyncPipeline::submitData(const InputData& inputData, const std::shared_
         frameID,
         request,
         internalModelData,
-        metaData] {
+        metaData,
+        startTime] {
             {
                 std::lock_guard<std::mutex> lock(mtx);
                 this->inferenceMetrics.update(startTime);
